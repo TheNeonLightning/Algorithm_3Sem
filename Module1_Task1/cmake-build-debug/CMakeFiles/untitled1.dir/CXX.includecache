@@ -6,9 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/theneonlightning/Project/Module1_Task1/main.cpp
+/home/theneonlightning/Algorithm_3Sem/Module1_Task1/main.cpp
 iostream
 -
 vector
+-
+string
 -
 
