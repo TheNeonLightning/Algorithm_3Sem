@@ -14,6 +14,25 @@ using std::cout;
 using std::string;
 using std::vector;
 
+size_t PrefixFunctionNextValue(const string& line, vector<int>& prefix_function, size_t current_index, size_t previous_value);
+
+void PrefixFunctionForPattern(const string& line, vector<int>& prefix_function, size_t size);
+
+void PositionSearch(vector<int>& result, const string& line, size_t size);
+
+int main() {
+  string pattern, str, line;
+  cin >> pattern;
+  cin >> str;
+  line = pattern + '#' + str;
+  vector<int> result; // массив для хранения результата
+  PositionSearch(result, line, pattern.length());
+  for (size_t index = 0; index < result.size(); ++index) {
+    cout << result[index] << ' ';
+  }
+  return 0;
+}
+
 size_t PrefixFunctionNextValue(const string& line, vector<int>& prefix_function, size_t current_index, size_t previous_value) {
   bool flag = false;
   while (!flag) {
@@ -49,17 +68,4 @@ void PositionSearch(vector<int>& result, const string& line, size_t size) {
       result.push_back(index - 2 * size);
     }
   }
-}
-
-int main() {
-  string pattern, str, line;
-  cin >> pattern;
-  cin >> str;
-  line = pattern + '#' + str;
-  vector<int> result; // массив для хранения результата
-  PositionSearch(result, line, pattern.length());
-  for (size_t index = 0; index < result.size(); ++index) {
-    cout << result[index] << ' ';
-  }
-  return 0;
 }
