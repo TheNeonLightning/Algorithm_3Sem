@@ -5,17 +5,23 @@ using std::cin;
 using std::cout;
 using std::vector;
 
-void StringFromPrefixFunction(const vector<size_t>& prefix_function, vector<char>& string);
+void StringFromPrefixFunction(const vector<size_t>& prefix_function,
+    vector<char>& string);
 
-void ZFunctionFromString(const vector<char>& string, vector<size_t>& z_function);
+void ZFunctionFromString(const vector<char>& string,
+    vector<size_t>& z_function);
 
-void PrefixFunctionFromZFunction(const vector<size_t>& z_function, vector<size_t>& prefix_function);
+void PrefixFunctionFromZFunction(const vector<size_t>& z_function,
+    vector<size_t>& prefix_function);
 
-void PrefixFunctionFromString(const vector<char>& string, vector<size_t>&prefix_function);
+void PrefixFunctionFromString(const vector<char>& string,
+    vector<size_t>&prefix_function);
 
-void StringFromZFunction(const vector<size_t>& z_function, vector<char>& string);
+void StringFromZFunction(const vector<size_t>& z_function,
+    vector<char>& string);
 
-void ZFunctionFromPrefixFunction(const vector<size_t>& prefix_function, vector<size_t>& z_function);
+void ZFunctionFromPrefixFunction(const vector<size_t>& prefix_function,
+    vector<size_t>& z_function);
 
 void B1Solution();
 
@@ -26,7 +32,8 @@ int main() {
   return 0;
 }
 
-void StringFromPrefixFunction(const vector<size_t>& prefix_function, vector<char>& string) {
+void StringFromPrefixFunction(const vector<size_t>& prefix_function,
+    vector<char>& string) {
   char a_letter = 'a';
   string[0] = a_letter;
   int current_index = 0;
@@ -52,7 +59,8 @@ void StringFromPrefixFunction(const vector<size_t>& prefix_function, vector<char
   }
 }
 
-void ZFunctionFromString(const vector<char>& string, vector<size_t>& z_function) {
+void ZFunctionFromString(const vector<char>& string,
+    vector<size_t>& z_function) {
   size_t left = 0, right = 0;
   for (size_t index = 1; index < string.size(); ++index) {
     if (index <= right) {
@@ -69,7 +77,8 @@ void ZFunctionFromString(const vector<char>& string, vector<size_t>& z_function)
   }
 }
 
-void PrefixFunctionFromZFunction(const vector<size_t>& z_function, vector<size_t>& prefix_function) {
+void PrefixFunctionFromZFunction(const vector<size_t>& z_function,
+    vector<size_t>& prefix_function) {
   for (size_t index = 1; index < z_function.size(); ++index) {
     for (size_t current_index = z_function[index]; current_index > 0;
          --current_index) {
@@ -82,19 +91,22 @@ void PrefixFunctionFromZFunction(const vector<size_t>& z_function, vector<size_t
   }
 }
 
-void PrefixFunctionFromString(const vector<char>& string, vector<size_t>&prefix_function) {
+void PrefixFunctionFromString(const vector<char>& string,
+    vector<size_t>&prefix_function) {
   vector<size_t> z_function(string.size(), 0);
   ZFunctionFromString(string, z_function);
   PrefixFunctionFromZFunction(z_function, prefix_function);
 }
 
-void StringFromZFunction(const vector<size_t>& z_function, vector<char>& string) {
+void StringFromZFunction(const vector<size_t>& z_function,
+    vector<char>& string) {
   vector<size_t> prefix_function(z_function.size(), 0);
   PrefixFunctionFromZFunction(z_function, prefix_function);
   StringFromPrefixFunction(prefix_function, string);
 }
 
-void ZFunctionFromPrefixFunction(const vector<size_t>& prefix_function, vector<size_t>& z_function) {
+void ZFunctionFromPrefixFunction(const vector<size_t>& prefix_function,
+    vector<size_t>& z_function) {
   vector<char> string(prefix_function.size());
   StringFromPrefixFunction(prefix_function, string);
   ZFunctionFromString(string, z_function);
