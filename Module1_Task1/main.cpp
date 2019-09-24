@@ -14,9 +14,11 @@ using std::cout;
 using std::string;
 using std::vector;
 
-size_t PrefixFunctionNextValue(const string& line, vector<int>& prefix_function, size_t current_index, size_t previous_value);
+size_t PrefixFunctionNextValue(const string& line, vector<int>& prefix_function,
+    size_t current_index, size_t previous_value);
 
-void PrefixFunctionForPattern(const string& line, vector<int>& prefix_function, size_t size);
+void PrefixFunctionForPattern(const string& line,
+    const vector<int>& prefix_function, size_t size);
 
 void PositionSearch(vector<int>& result, const string& line, size_t size);
 
@@ -33,7 +35,9 @@ int main() {
   return 0;
 }
 
-size_t PrefixFunctionNextValue(const string& line, vector<int>& prefix_function, size_t current_index, size_t previous_value) {
+size_t PrefixFunctionNextValue(const string& line,
+    const vector<int>& prefix_function, size_t current_index,
+    size_t previous_value) {
   bool flag = false;
   while (!flag) {
     if (line[current_index] == line[previous_value]) {
@@ -49,9 +53,11 @@ size_t PrefixFunctionNextValue(const string& line, vector<int>& prefix_function,
   return previous_value;
 }
 
-void PrefixFunctionForPattern(const string& line, vector<int>& prefix_function, size_t size) {
+void PrefixFunctionForPattern(const string& line, vector<int>& prefix_function,
+    size_t size) {
   for (size_t index = 1; index < size; ++index) {
-    prefix_function[index] = PrefixFunctionNextValue(line, prefix_function, index, prefix_function[index - 1]);
+    prefix_function[index] = PrefixFunctionNextValue(line, prefix_function,
+        index, prefix_function[index - 1]);
   }
 }
 
@@ -59,10 +65,12 @@ void PositionSearch(vector<int>& result, const string& line, size_t size) {
   vector<int> prefix_function(size); // значение префикс-функции для паттерна
   prefix_function[0] = 0;
   PrefixFunctionForPattern(line, prefix_function, size);
-  size_t previous_value = 0; // достаточно хранить предыдущее значение префикс функции
+  size_t previous_value = 0; // достаточно хранить предыдущее значение префикс
+  // функции
   for (size_t index = size + 1; index < line.length(); ++index) { // вычисление
     // префикс функции для остальной части общей строки (без сохранения)
-    previous_value = PrefixFunctionNextValue(line, prefix_function, index, previous_value);
+    previous_value = PrefixFunctionNextValue(line, prefix_function, index,
+        previous_value);
     if (previous_value == size) { // если значение префикс функции равно длине
       // паттерна => нашли ещё одно вхождение
       result.push_back(index - 2 * size);
