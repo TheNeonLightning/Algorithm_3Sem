@@ -46,13 +46,10 @@ void StringFromPrefixFunction(const vector<size_t>& prefix_function,
         current_index = prefix_function[current_index - 1];
       }
       current_index = 1;
-      while(true) {
-        if (available[current_index]) {
-          string[index] = a_letter + current_index;
-          break;
-        }
+      while(!available[current_index]) {
         ++current_index;
       }
+      string[index] = a_letter + current_index;
     } else {
       string[index] = string[prefix_function[index] - 1];
     }
