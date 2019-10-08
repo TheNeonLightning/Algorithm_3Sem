@@ -51,37 +51,9 @@ public:
 
 
 int PatternSeparating(const string& str, vector<string>& patterns,
-                      vector<int>& starting_pos) {
-  int index = 0, beginning = 0, patterns_number = 0;
+                      vector<int>& starting_pos);
 
-  while ((str[index] == '?') && (index < str.size())) {
-    ++index;
-  }
-  beginning = index;
-
-  for (; index < str.size(); ++index) {
-    if (str[index] == '?') {
-
-      starting_pos.push_back(beginning);
-      patterns.push_back(str.substr(beginning, index - beginning));
-      ++patterns_number;
-
-      while ((str[index] == '?') && (index < str.size())) {
-        ++index;
-      }
-      beginning = index;
-    }
-  }
-
-  if (str.back() != '?') {
-    starting_pos.push_back(beginning);
-    patterns.push_back(str.substr(beginning, index - beginning));
-    ++patterns_number;
-  }
-
-  return patterns_number;
-}
-
+////////////////////////////////////////////////////////////////////////////////
 
 int main() {
   Trie trie;
@@ -102,6 +74,8 @@ int main() {
 
   return 0;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 //////////Trie//////////////////////////////////////////////////////////////////
 
@@ -220,4 +194,40 @@ void Trie::Solution(int patterns_number, int str_size,
       }
     }
   }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+int PatternSeparating(const string& str, vector<string>& patterns,
+                      vector<int>& starting_pos) {
+  int index = 0, beginning = 0, patterns_number = 0;
+
+  while ((str[index] == '?') && (index < str.size())) {
+    ++index;
+  }
+  beginning = index;
+
+  for (; index < str.size(); ++index) {
+    if (str[index] == '?') {
+
+      starting_pos.push_back(beginning);
+      patterns.push_back(str.substr(beginning, index - beginning));
+      ++patterns_number;
+
+      while ((str[index] == '?') && (index < str.size())) {
+        ++index;
+      }
+      beginning = index;
+    }
+  }
+
+  if (str.back() != '?') {
+    starting_pos.push_back(beginning);
+    patterns.push_back(str.substr(beginning, index - beginning));
+    ++patterns_number;
+  }
+
+  return patterns_number;
 }
