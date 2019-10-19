@@ -6,27 +6,29 @@ using std::string;
 using std::cin;
 using std::cout;
 
-class Node {
-public:
-  bool leaf = false;
-  int link = -1;
-  int terminal_link = -1;
-  int previous = -1;
-  char previous_char = 0;
 
-  vector<int> next = vector<int>(26, -1);
-  vector<int> transition = vector<int>(26, -1);
-  vector<int> pattern_indexes;
-  vector<int> pattern_sizes;
-
-  Node() = default;
-  Node(int previous, char previous_char):previous(previous),
-                                         previous_char(previous_char) {};
-
-};
 
 class Trie {
 public:
+
+  class Node {
+  public:
+    bool leaf = false;
+    int link = -1;
+    int terminal_link = -1;
+    int previous = -1;
+    char previous_char = 0;
+
+    vector<int> next = vector<int>(26, -1);
+    vector<int> transition = vector<int>(26, -1);
+    vector<int> pattern_indexes;
+    vector<int> pattern_sizes;
+
+    Node() = default;
+    Node(int previous, char previous_char):previous(previous),
+                                           previous_char(previous_char) {};
+
+  };
 
   vector<Node> trie = vector<Node>(1);
 
@@ -42,13 +44,21 @@ public:
 
   void AddString(const string& str, int pattern_number, int pattern_size);
 
-
-  void Solution(int patterns_number, int str_size, vector<int> &starting_pos,
-                string &line);
+  /**
+   * Counts for each index the number of patterns corresponding to it. The
+   * results are stored in vector<int>& count.
+   */
+  void CountMatches(int patterns_number, int str_size,
+      vector<int> &starting_pos, vector<int>& count, string &line);
 
 };
 
-
+/**
+   * Outputs the indexes for which the number of matches is equals to the number
+   * of patterns.
+   */
+void OutputIndexes(int patterns_number, int str_size, int line_size,
+                   vector<int>& count);
 
 int PatternSeparating(const string& str, vector<string>& patterns,
                       vector<int>& starting_pos);
@@ -70,7 +80,11 @@ int main() {
     trie.AddString(patterns[index], starting_pos[index], patterns[index].size());
   }
 
-  trie.Solution(patterns_number, str.size(), starting_pos, line);
+  vector<int> count(line.size(), 0);
+
+  trie.CountMatches(patterns_number, str.size(), starting_pos, count, line);
+
+  OutputIndexes(patterns_number, str.size(), line.size(), count);
 
   return 0;
 }
@@ -155,10 +169,9 @@ void Trie::AddString(const string &str, int pattern_number, int pattern_size) {
 }
 
 
-void Trie::Solution(int patterns_number, int str_size,
-                    vector<int> &starting_pos, string &line) {
+void Trie::CountMatches(int patterns_number, int str_size,
+    vector<int> &starting_pos, vector<int>& count, string &line) {
 
-  vector<int> count(line.size(), 0);
   int current_node = 0;
 
   for (int index = 0; index < line.size(); ++index) {
@@ -187,9 +200,13 @@ void Trie::Solution(int patterns_number, int str_size,
       local_node = GetTerminalLink(local_node);
     }
   }
-  if (line.size() >= str_size) {
-    for (int index = 0; index < line.size() - str_size + 1; ++index) {
-      if ((index < line.size()) && (count[index] == patterns_number)) {
+}
+
+void OutputIndexes(int patterns_number, int str_size, int line_size,
+    vector<int>& count) {
+  if (line_size >= str_size) {
+    for (int index = 0; index < line_size - str_size + 1; ++index) {
+      if ((index < line_size) && (count[index] == patterns_number)) {
         cout << index << ' ';
       }
     }

@@ -1,4 +1,4 @@
-/snap/clion/85/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/theneonlightning/Algorithm_3Sem/Module1_Task3
+/snap/clion/88/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/theneonlightning/Algorithm_3Sem/Module1_Task3
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/theneonlightning/Algorithm_3Sem/Module1_Task3/cmake-build-debug
