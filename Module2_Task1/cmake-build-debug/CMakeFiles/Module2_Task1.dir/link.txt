@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/Module2_Task1.dir/main.cpp.o  -o Module2_Task1 
