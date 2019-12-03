@@ -27,10 +27,53 @@ public:
 
 };
 
+double DistanceBetweenPoints(const Point& left, const Point& right);
+
+double DistanceBetweenPointAndSegment(const Point& point,
+                                      const LineSegment& segment);
+
+double SearchMinDistance(const Point& point, Point& left, Point& right);
+  // finds minimal distance between the point and the line segment from point
+  // left to point right (using ternary search on it)
+
+double SearchMin(const LineSegment& segment, Point& left, Point& right);
+  // finds minimal distance between two line segments: first one is given as a
+  // class LineSegment, second is the line segment from point left to point
+  // right (using ternary search on it)
+
+double CalculateDistance(const LineSegment& first_seg,
+                         const LineSegment& second_seg);
+
+////////////////////////////////////////////////////////////////////////////////
+
+int main() {
+  int x1 = 0, y1 = 0, z1 = 0,
+      x2 = 0, y2 = 0, z2 = 0;
+
+  cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+  LineSegment first_seg(x1, y1, z1, x2, y2, z2);
+
+  cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+  LineSegment second_seg(x1, y1, z1, x2, y2, z2);
+
+  cout << std::setprecision(10) <<  CalculateDistance(first_seg, second_seg);
+  return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 double DistanceBetweenPoints(const Point& left, const Point& right) {
   return sqrt(pow(left.x - right.x, 2) + pow(left.y - right.y, 2) +
               pow(left.z - right.z, 2));
 }
+
+double DistanceBetweenPointAndSegment(const Point& point,
+                                      const LineSegment& segment) {
+  Point left = segment.first;
+  Point right = segment.second;
+  return SearchMinDistance(point, left, right);
+}
+
 
 double SearchMinDistance(const Point& point, Point& left, Point& right) {
   // finds minimal distance between the point and the line segment from point
@@ -61,13 +104,6 @@ double SearchMinDistance(const Point& point, Point& left, Point& right) {
   } else {
     return SearchMinDistance(point, local_left, right);
   }
-}
-
-double DistanceBetweenPointAndSegment(const Point& point,
-                                      const LineSegment& segment) {
-  Point left = segment.first;
-  Point right = segment.second;
-  return SearchMinDistance(point, left, right);
 }
 
 double SearchMin(const LineSegment& segment, Point& left, Point& right) {
@@ -112,18 +148,4 @@ double CalculateDistance(const LineSegment& first_seg,
 
   return SearchMin(first_seg, left, right);
 
-}
-
-int main() {
-  int x1 = 0, y1 = 0, z1 = 0,
-      x2 = 0, y2 = 0, z2 = 0;
-
-  cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
-  LineSegment first_seg(x1, y1, z1, x2, y2, z2);
-
-  cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
-  LineSegment second_seg(x1, y1, z1, x2, y2, z2);
-
-  cout << std::setprecision(10) <<  CalculateDistance(first_seg, second_seg);
-  return 0;
 }
