@@ -27,13 +27,13 @@ public:
   /**
    * Getting polygon and storing it in the vector of points.
    */
-  Polygon(size_t number_of_points);
+  Polygon(const size_t number_of_points);
 
-  void PushBack(Point point);
+  void PushBack(const Point point);
 
   void Reverse();
 
-  Point& operator[] (size_t index);
+  Point& operator[] (const size_t index);
 
   /**
    * Checks if polygon is containing point (0;0) using binary search.
@@ -46,7 +46,7 @@ private:
    * Adjusting polygon so the beginning point (the rightest point among the lowest
    * points) of it is in the head of vector.
    */
-  void AdjustStartingPoint(size_t start_index);
+  void AdjustStartingPoint(const size_t start_index);
 
 };
 
