@@ -5,7 +5,7 @@
 using std::cin;
 using std::cout;
 
-const double EPS = 0.0000000001;
+const double EPS = 1e-9;
 
 class Point {
 public:
