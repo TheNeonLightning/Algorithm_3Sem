@@ -17,6 +17,39 @@ struct Point {
     Point(double x, double y): x(x), y(y) {}
 };
 
+struct Polygon {
+public:
+  size_t number_of_points = 0;
+  vector<Point> polygon;
+
+  Polygon() = default;
+
+  /**
+   * Getting polygon and storing it in the vector of points.
+   */
+  Polygon(size_t number_of_points);
+
+  void PushBack(Point point);
+
+  void Reverse();
+
+  Point& operator[] (size_t index);
+
+  /**
+   * Checks if polygon is containing point (0;0) using binary search.
+   */
+  bool ContainingCenterPoint();
+
+private:
+
+  /**
+   * Adjusting polygon so the beginning point (the rightest point among the lowest
+   * points) of it is in the head of vector.
+   */
+  void AdjustStartingPoint(size_t start_index);
+
+};
+
 /**
  * Compares two polar angles (in the clock-wise direction). The first one is
  * defined by two points:
@@ -32,25 +65,7 @@ int CompareAngle(Point first_one, Point first_two, Point second_one,
  * Calculating dilation (Minkowski's sum) for two polygons: first and second.
  * The result is stored in vector result.
  */
-void CalculateDilation(vector<Point>& first, vector<Point>& second,
-                       vector<Point>& result);
-
-/**
- * Checks if polygon is containing point (0;0) using binary search.
- */
-bool ContainingCenterPoint(vector<Point>& polygon);
-
-/**
- * Adjusting polygon so the beginning point (the rightest point among the lowest
- * points) of it is in the head of vector.
- */
-void AdjustStartingPoint(size_t start_index, vector<Point>& polygon,
-                         vector<Point>& new_polygon);
-
-/**
- * Getting polygon and storing it in the vector of points.
- */
-void GetPolygon(size_t number_of_points, vector<Point>& polygon);
+void CalculateDilation(Polygon& first, Polygon& second, Polygon& result);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -58,25 +73,127 @@ int main() {
     size_t first_num = 0, second_num = 0;
 
     cin >> first_num;
-    vector<Point> first;
+    Polygon first(first_num);
 
-    GetPolygon(first_num, first);
 
     cin >> second_num;
-    vector<Point> second;
+    Polygon second(second_num);
+    second.Reverse();
 
-    GetPolygon(second_num, second);
-
-    vector<Point> polygon;
+    Polygon polygon;
     CalculateDilation(first, second, polygon);
 
-    if (ContainingCenterPoint(polygon)) {
+    if (polygon.ContainingCenterPoint()) {
         cout << "YES";
     } else {
         cout << "NO";
     }
 
     return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/// Polygon
+
+void Polygon::AdjustStartingPoint(const size_t start_index) {
+
+  vector<Point> new_polygon;
+
+  for (size_t index = start_index; index < polygon.size(); ++index) {
+    new_polygon.push_back(polygon[index]);
+  }
+  for (size_t index = 0; index < start_index; ++index) {
+    new_polygon.push_back(polygon[index]);
+  }
+
+  polygon = new_polygon;
+}
+
+Polygon::Polygon(const size_t number_of_points):
+                 number_of_points(number_of_points) {
+  double x = 0, y = 0;
+  size_t bottom_right_point = 0;
+
+  for (size_t index = 0; index < number_of_points; ++index) {
+    cin >> x >> y;
+    polygon.emplace_back(x, y);
+    if (y < polygon[bottom_right_point].y) {
+      bottom_right_point = index;
+    }
+
+    if ((y == polygon[bottom_right_point].y) &&
+        (x > polygon[bottom_right_point].x)) {
+      bottom_right_point = index;
+    }
+  }
+
+  AdjustStartingPoint(bottom_right_point);
+}
+
+void Polygon::PushBack(const Point point) {
+  polygon.push_back(point);
+  ++number_of_points;
+}
+
+void Polygon::Reverse() {
+  double x = 0, y = 0;
+  size_t bottom_right_point = 0;
+  vector<Point> new_polygon;
+
+  for (size_t index = 0; index < number_of_points; ++index) {
+    x = polygon[index].x;
+    y = polygon[index].y;
+    new_polygon.emplace_back(-x, -y);
+    if (-y < new_polygon[bottom_right_point].y) {
+      bottom_right_point = index;
+    }
+
+    if ((-y == new_polygon[bottom_right_point].y) &&
+        (-x > new_polygon[bottom_right_point].x)) {
+      bottom_right_point = index;
+    }
+  }
+
+  polygon = new_polygon;
+
+  AdjustStartingPoint(bottom_right_point);
+
+
+}
+
+Point& Polygon::operator[] (const size_t index) {
+  return polygon[index];
+}
+
+bool Polygon::ContainingCenterPoint() {
+  Point vertex = polygon[0];
+  Point center(0, 0);
+  size_t size = polygon.size();
+  size_t left = 1, right = size - 1, mid = 0;
+
+  if (CompareAngle(vertex, polygon[right], vertex, center) == -1) {
+    return false;
+  }
+
+  if (CompareAngle(vertex, polygon[left], vertex, center) == 1) {
+    return false;
+  }
+
+  while (left != right - 1) {
+    mid = (left + right) / 2;
+
+    if (CompareAngle(vertex, polygon[mid], vertex, center) == -1) {
+      left = mid;
+    } else {
+      right = mid;
+    }
+  }
+
+  double double_signed_square =
+      (polygon[left].x - polygon[right].x) * (0 - polygon[right].y) -
+      (polygon[left].y - polygon[right].y) * (0 - polygon[right].x);
+
+  return double_signed_square >= 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -134,22 +251,22 @@ int CompareAngle(Point first_one, Point first_two, Point second_one,
 }
 
 
-void CalculateDilation(vector<Point>& first, vector<Point>& second,
-                       vector<Point>& result) {
+void CalculateDilation(Polygon& first, Polygon& second,
+                       Polygon& result) {
   int current_first = 0;
   int current_second = 0;
 
-  size_t first_size = first.size();
-  size_t second_size = second.size();
+  size_t first_size = first.number_of_points;
+  size_t second_size = second.number_of_points;
 
-  first.push_back(first[0]);
-  second.push_back(second[0]);
+  first.PushBack(first[0]);
+  second.PushBack(second[0]);
 
-  first.push_back(first[1]);
-  second.push_back(second[1]);
+  first.PushBack(first[1]);
+  second.PushBack(second[1]);
 
   while (current_first < first_size && current_second < second_size) {
-    result.push_back(first[current_first] + second[current_second]);
+    result.PushBack(first[current_first] + second[current_second]);
 
     if (CompareAngle(first[current_first], first[current_first + 1],
         second[current_second], second[current_second + 1]) == -1) {
@@ -161,77 +278,10 @@ void CalculateDilation(vector<Point>& first, vector<Point>& second,
   }
 
   while (current_first < first_size) {
-    result.push_back(first[current_first++] + second[0]);
+    result.PushBack(first[current_first++] + second[0]);
   }
 
   while (current_second < second_size) {
-    result.push_back(second[current_second++] + first[0]);
+    result.PushBack(second[current_second++] + first[0]);
   }
-}
-
-
-bool ContainingCenterPoint(vector<Point>& polygon) {
-  Point vertex = polygon[0];
-  Point center(0, 0);
-  size_t size = polygon.size();
-  size_t left = 1, right = size - 1, mid = 0;
-
-  if (CompareAngle(vertex, polygon[right], vertex, center) == -1) {
-    return false;
-  }
-
-  if (CompareAngle(vertex, polygon[left], vertex, center) == 1) {
-    return false;
-  }
-
-  while (left != right - 1) {
-    mid = (left + right) / 2;
-
-    if (CompareAngle(vertex, polygon[mid], vertex, center) == -1) {
-      left = mid;
-    } else {
-      right = mid;
-    }
-  }
-
-  double double_signed_square = (polygon[left].x - polygon[right].x) *
-      (0 - polygon[right].y) - (polygon[left].y - polygon[right].y) *
-      (0 - polygon[right].x);
-
-  return double_signed_square >= 0;
-}
-
-
-void AdjustStartingPoint(size_t start_index, vector<Point>& polygon,
-    vector<Point>& new_polygon) {
-
-  for (size_t index = start_index; index < polygon.size(); ++index) {
-    new_polygon.push_back(polygon[index]);
-  }
-  for (size_t index = 0; index < start_index; ++index) {
-    new_polygon.push_back(polygon[index]);
-  }
-}
-
-
-void GetPolygon(size_t number_of_points, vector<Point>& polygon) {
-  double x = 0, y = 0;
-  size_t bottom_right_point = 0;
-
-  for (size_t index = 0; index < number_of_points; ++index) {
-    cin >> x >> y;
-    polygon.emplace_back(x, y);
-    if (y < polygon[bottom_right_point].y) {
-      bottom_right_point = index;
-    }
-
-    if ((y == polygon[bottom_right_point].y) &&
-        (x > polygon[bottom_right_point].x)) {
-      bottom_right_point = index;
-    }
-  }
-
-  vector<Point> sorted_polygon;
-  AdjustStartingPoint(bottom_right_point, polygon, sorted_polygon);
-  polygon = sorted_polygon;
 }
