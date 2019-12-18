@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/theneonlightning/Algorithm_3Sem/Module4_Task1/biginteger.h
+iostream
+-
+vector
+-
+string
+-
+
+/home/theneonlightning/Algorithm_3Sem/Module4_Task1/main.cpp
+vector
+-
+biginteger.h
+/home/theneonlightning/Algorithm_3Sem/Module4_Task1/biginteger.h
+
